@@ -146,4 +146,8 @@
 
   # https://fzakaria.com/2025/02/26/nix-pragmatism-nix-ld-and-envfs
   services.envfs.enable = true;
+
+  programs.git.config = {
+    init.defaultBranch = "main";
+  };
 }
