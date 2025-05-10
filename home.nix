@@ -65,7 +65,39 @@
 
     # keyboardio atreus
     qmk
+
+    # fonts
+    cascadia-code
+
+    # gnome
+    gnome-tweaks
   ];
+
+   dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      font-hinting = "full";
+      font-antialiasing = "rgba";
+#      monospace-font-name = "0xProto Nerd Font Mono";
+#      document-font-name = "Inter";
+    };
+  };
+
+#  fonts.fontconfig = {
+#    enable = true;
+#    defaultFonts = {
+#      monospace = [ "0xProto Nerd Font Mono" "Noto Sans Mono CJK HK" ];
+#      serif = [ "Noto Serif CJK HK" ];
+#      sansSerif = [ "Inter" "Noto Sans CJK HK" ];
+#    };
+#  };
+
+#  gtk = {
+#    enable = true;
+#    font = {
+#      name = "Inter";
+#      package = pkgs.inter;
+#    };
+#  };
 
   # basic configuration of git, please change to your own
   programs.git = {
