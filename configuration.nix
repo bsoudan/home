@@ -86,7 +86,8 @@
   users.users.bsoudan = {
     isNormalUser = true;
     description = "Bill Soudan";
-    extraGroups = [ "networkmanager" "wheel" ];
+    # dialout -- qmk flashing for /dev/ttyACM0
+    extraGroups = [ "networkmanager" "wheel" "dialout"];
     packages = with pkgs; [
     #  thunderbird
     ];

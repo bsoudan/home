@@ -84,6 +84,9 @@
     ethtool
     pciutils # lspci
     usbutils # lsusb
+
+    # keyboardio atreus
+    qmk
   ];
 
   # basic configuration of git, please change to your own
@@ -134,6 +137,15 @@
       urldecode = "python3 -c 'import sys, urllib.parse as ul; print(ul.unquote_plus(sys.stdin.read()))'";
       urlencode = "python3 -c 'import sys, urllib.parse as ul; print(ul.quote_plus(sys.stdin.read()))'";
     };
+  };
+
+  programs.vscode = {
+    enable = true;
+    #extensions = with pkgs.vscode-extensions; [
+    #  dracula-theme.theme-dracula
+    #  vscodevim.vim
+    #  yzhang.markdown-all-in-one
+    #];
   };
 
   home.stateVersion = "24.11";
