@@ -148,6 +148,22 @@
     #];
   };
 
+  xdg = {
+    enable = true;
+
+    userDirs = {
+      enable = true;
+      desktop = "$HOME/doc/desktop";
+      download = "$HOME/doc/downloads";
+      documents = "$HOME/doc";
+      templates = "$HOME/doc/templates";
+      music = "$HOME/doc/music";
+      videos = "$HOME/doc/videos";
+      pictures = "$HOME/doc/pictures";
+      publicShare = "$HOME/doc/public";
+    };
+  };
+
   home.stateVersion = "24.11";
 
   # Let home Manager install and manage itself.
