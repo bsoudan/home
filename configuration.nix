@@ -11,6 +11,7 @@
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.trustedUsers = [ "root" "@wheel" ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -107,6 +108,10 @@
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
   ];
+
+  # https://nixos.wiki/wiki/Wayland
+  # Enable ozone wayland support in chromium/electron based apps
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
