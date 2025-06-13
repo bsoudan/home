@@ -2,6 +2,10 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
+# TODO:
+#  * /root/.config/micro/settings.json & bindings.json manually linked to ~bsoudan/.config/micro/
+#
+
 { config, pkgs, ... }:
 
 {
@@ -11,7 +15,7 @@
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.trustedUsers = [ "root" "@wheel" ];
+  nix.settings.trusted-users = [ "root" "@wheel" ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -94,9 +98,6 @@
     ];
   };
 
-  # Install firefox.
-  programs.firefox.enable = true;
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -105,13 +106,18 @@
   environment.systemPackages = with pkgs; [
      git
      steam-run
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+     home-manager
+     micro
   #  wget
   ];
 
-  # https://nixos.wiki/wiki/Wayland
-  # Enable ozone wayland support in chromium/electron based apps
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.sessionVariables = {
+    EDITOR = "micro";
+
+    # https://nixos.wiki/wiki/Wayland
+    # Enable ozone wayland support in chromium/electron based apps
+    NIXOS_OZONE_WL = "1";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -144,18 +150,44 @@
     stoneledge = { config = '' config /etc/nixos/openvpn-carbon.conf ''; };
   };
 
-  programs.steam.enable = true;
+  services.envfs.enable = true;
 
   # https://www.reddit.com/r/NixOS/comments/1g4g1mp/how_to_get_nixld_working/
   programs.nix-ld = {
     enable = true;
     libraries = pkgs.steam-run.args.multiPkgs pkgs;
-  }; 
+  };
 
   # https://fzakaria.com/2025/02/26/nix-pragmatism-nix-ld-and-envfs
-  services.envfs.enable = true;
 
-  programs.git.config = {
-    init.defaultBranch = "main";
+  environment.shellAliases = {
+      e = "$EDITOR";
   };
+
+  fonts.packages = with pkgs; [
+  	noto-fonts
+  	noto-fonts-cjk-sans
+  	noto-fonts-emoji
+  	ubuntu_font_family
+  	corefonts
+  ];
+
+  fonts.enableDefaultPackages = true;
+
+  fonts.fontconfig = {
+    enable = true;
+    antialias = true;
+    hinting.enable = true;
+    hinting.style = "slight";  # Ubuntu uses 'slight'
+    subpixel.rgba = "rgb";     # most common LCD arrangement
+    subpixel.lcdfilter = "default";  # or "light" if you prefer
+    cache32Bit = true;             # lets 32-bit Electron builds see the cache
+    defaultFonts = {
+      sansSerif = [ "Ubuntu" "Noto Sans" ];
+      serif     = [ "Noto Serif" ];
+      monospace = [ "Ubuntu Mono" ];
+      emoji     = [ "Noto Color Emoji" ];
+    };
+  };
+
 }
