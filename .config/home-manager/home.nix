@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   nixpkgs.config.allowUnfree = true;
@@ -13,6 +13,7 @@
 
   home.shellAliases = {
     e = "$EDITOR";
+    ehome = "$EDITOR ~/.config/home-manager/home.nix && home-manager switch";
   };
 
   home.packages = with pkgs; [
@@ -87,36 +88,39 @@
     jc
 
     godot_4
+
+    wl-clipboard
+    bitwarden-cli
+
+    zoom
+
+    obsidian
+    telegram-desktop
   ];
 
+  # dconf watch /
   dconf.settings = {
     "org/gnome/desktop/interface" = {
-      font-hinting = "full";
+      font-hinting = "slight";
       font-antialiasing = "rgba";
-#      monospace-font-name = "0xProto Nerd Font Mono";
-#      document-font-name = "Inter";
+      interface-font-name = "Ubuntu 11";
+      document-font-name = "Ubuntu 11";
+      monospace-font-name = "Ubuntu Mono 12";
+    };
+    "org/gnome/desktop/peripherals/mouse" = {
+      speed = -0.3; # -1 to 1
     };
     "org/gnome/desktop/wm/preferences" = {
       button-layout =  "appmenu:minimize,maximize,close";
     };
+
+    "org/gnome/shell" = {
+      app-switcher = "current-workspace-only";
+    };
   };
 
-#  fonts.fontconfig = {
-#    enable = true;
-#    defaultFonts = {
-#      monospace = [ "0xProto Nerd Font Mono" "Noto Sans Mono CJK HK" ];
-#      serif = [ "Noto Serif CJK HK" ];
-#      sansSerif = [ "Inter" "Noto Sans CJK HK" ];
-#    };
-#  };
 
-#  gtk = {
-#    enable = true;
-#    font = {
-#      name = "Inter";
-#      package = pkgs.inter;
-#    };
-#  };
+  #fonts.enableDefaultPackages = true;
 
   # basic configuration of git, please change to your own
   programs.git = {
@@ -141,6 +145,9 @@
       };
       #golang.format = "[$symbol]($style)";
       #cpp.format = "[$symbol]($style)";
+      character.format = "$symbol ";
+      character.success_symbol = "[>](bold_green)";
+      character.error_symbol = "[>](bold_red)";
     };
   };
 
@@ -205,7 +212,6 @@
     settings = {
   	  # https://github.com/zyedidia/micro/blob/master/runtime/help/options.md
   	  autosu = true;
-  	  #clipboard = "terminal";
   	  colorcolumn = 120;
   	  diffgutter = true;
   	  rmtrailingws = true;
@@ -222,10 +228,16 @@
   }
   '';
 
-  home.stateVersion = "24.11";
+  programs.chromium = {
+    enable = true;
+    package = pkgs.brave;
+    extensions = [
+      { id = "nngceckbapebfimnlniiiahkandclblb"; } # bitwarden
+    ];
+  };
+  # manual: disable password manager
 
-  # Let home Manager install and manage itself.
-  programs.home-manager.enable = true;
+  home.stateVersion = "24.11";
 }
 
   # link the configuration file in current directory to the specified location in home directory

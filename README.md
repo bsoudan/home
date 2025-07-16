@@ -1,4 +1,9 @@
 
 # 🏠 home
 
-- Home directory is managed by nix home-manager at `.config/home-manager/home.nix`.
+- Home directory is managed by nix home-manager.
+
+
+## Aliases
+
+ehome -- edit .config/home-manager/home.nix && home-manager switch
