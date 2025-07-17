@@ -11,6 +11,13 @@
 
     bashrcExtra = ''
       export PATH="$PATH:$HOME/bin:$HOME/.local/bin:$HOME/.local/go/bin"
+
+      # set window title
+      # https://starship.rs/advanced-config/#change-window-title
+      function set_win_title(){
+          echo -ne "\033]0; $USER@$HOSTNAME \007"
+      }
+      starship_precmd_user_func="set_win_title"
     '';
 
   };
@@ -65,7 +72,7 @@
     enable = true;
     settings = {
       # https://starship.rs/config/
-      format = "$env_var$username$hostname$shlvl$shlvl$directory$git_branch$jobs$battery$shell$character";
+      format = "$env_var$shlvl$directory$git_branch$jobs$battery$shell$character";
       directory.truncate_to_repo = false;
       line_break.disabled = true;
       env_var.NIX_DEVSHELL = {
