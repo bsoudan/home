@@ -6,7 +6,6 @@ home-manager.lib.homeManagerConfiguration {
     ./modules/common.nix
     ./modules/shell.nix
     ./modules/sysadmin.nix
-    ./modules/gui.nix
   ];
 
   # extraSpecialArgs = {
