@@ -10,15 +10,9 @@
 
   imports =
     [ # Include the results of the hardware scan.
-      ./carbon-hardware.nix
+      ./carbon/hardware-configuration.nix
     ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.trusted-users = [ "root" "@wheel" ];
-
-  boot = {
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
     plymouth = {
       enable = true;
     };
@@ -37,32 +31,10 @@
   };
 
   networking.hostName = "carbon"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
   time.timeZone = "America/New_York";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
-  };
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -76,9 +48,6 @@
     layout = "us";
     variant = "dvorak";
   };
-
-  # Configure console keymap
-  console.keyMap = "dvorak";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -102,28 +71,13 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.bsoudan = {
-    isNormalUser = true;
-    description = "Bill Soudan";
-    # dialout -- qmk flashing for /dev/ttyACM0
-    extraGroups = [ "networkmanager" "wheel" "dialout"];
-    #packages = with pkgs; [
-    #  thunderbird
-    #];
-  };
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-     git
      steam-run
      home-manager
      micro
-  #  wget
   ];
 
   environment.sessionVariables = {
@@ -133,16 +87,6 @@
     # Enable ozone wayland support in chromium/electron based apps
     NIXOS_OZONE_WL = "1";
   };
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
@@ -163,20 +107,6 @@
 
   services.openvpn.servers = {
     stoneledge = { config = '' config /etc/nixos/openvpn-carbon.conf ''; };
-  };
-
-  services.envfs.enable = true;
-
-  # https://www.reddit.com/r/NixOS/comments/1g4g1mp/how_to_get_nixld_working/
-  programs.nix-ld = {
-    enable = true;
-    libraries = pkgs.steam-run.args.multiPkgs pkgs;
-  };
-
-  # https://fzakaria.com/2025/02/26/nix-pragmatism-nix-ld-and-envfs
-
-  environment.shellAliases = {
-      e = "$EDITOR";
   };
 
   fonts.packages = with pkgs; [
@@ -212,8 +142,4 @@
     localNetworkGameTransfers.openFirewall = true;
   };
 
-  services.netdata.enable = true;  
-  services.netdata.package = pkgs.netdata.override {
-    withCloudUi = true;
-  };
 }
