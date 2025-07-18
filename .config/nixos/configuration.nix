@@ -6,9 +6,8 @@
 #  * /root/.config/micro/settings.json & bindings.json manually linked to ~bsoudan/.config/micro/
 #
 
-{ config, pkgs, ... }:
+{ pkgs, ... }: {
 
-{
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -69,7 +68,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -93,9 +92,9 @@
     description = "Bill Soudan";
     # dialout -- qmk flashing for /dev/ttyACM0
     extraGroups = [ "networkmanager" "wheel" "dialout"];
-    packages = with pkgs; [
+    #packages = with pkgs; [
     #  thunderbird
-    ];
+    #];
   };
 
   # Allow unfree packages
@@ -190,4 +189,10 @@
     };
   };
 
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+  };
 }
