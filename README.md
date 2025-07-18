@@ -23,6 +23,8 @@
     home remote add origin ssh://git@github.com/bsoudan/home
     home fetch --all
     home reset --hard origin/main
+    home checkout -b main
+    home branch -d master
 
     # create new configuration in .config/home-manager/bsoudan-$HOSTNAME.nix
     ln -s .config/home-manager/bsoudan-$HOSTNAME.nix .config/home-manager/bsoudan.nix
