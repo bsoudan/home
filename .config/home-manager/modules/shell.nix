@@ -56,6 +56,8 @@
 
     # productivity
     glow # markdown previewer in terminal
+
+    nixd
   ];
 
   programs.git = {
@@ -95,15 +97,15 @@
   programs.micro = {
     enable = true;
     settings = {
-  	  # https://github.com/zyedidia/micro/blob/master/runtime/help/options.md
-  	  autosu = true;
-  	  colorcolumn = 120;
-  	  diffgutter = true;
-  	  rmtrailingws = true;
-  	  parsecursor = true;
-  	  ruler = false;
-  	  savecursor = true;
-  	  saveundo = true;
+      # https://github.com/zyedidia/micro/blob/master/runtime/help/options.md
+      autosu = true;
+      colorcolumn = 120;
+      diffgutter = true;
+      rmtrailingws = true;
+      parsecursor = true;
+      ruler = false;
+      savecursor = true;
+      saveundo = true;
   	};
   };
 
@@ -112,4 +114,8 @@
     "Ctrl-p": "CommandMode"
   }
   '';
+
+  programs.helix = {
+    enable = true;
+  };
 }
