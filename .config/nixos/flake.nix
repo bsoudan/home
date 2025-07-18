@@ -13,7 +13,7 @@
       system = "x86_64-linux";
       modules = [
         ./modules/common.nix
-        ./carbon.nix
+        ./carbon
       ];
     };
     nixosConfigurations.core = nixpkgs.lib.nixosSystem {
