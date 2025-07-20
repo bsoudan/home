@@ -40,14 +40,25 @@
 
   console.keyMap = "dvorak";
 
-  users.users.bsoudan = {
-    isNormalUser = true;
-    description = "Bill Soudan";
-    # dialout -- qmk flashing for /dev/ttyACM0
-    extraGroups = [ "networkmanager" "wheel" "dialout"];
-    #packages = with pkgs; [
-    #  thunderbird
-    #];
+  users.groups.storage.gid = 9999;
+
+  users.users = {
+    bsoudan = {
+      uid = 1000;
+      isNormalUser = true;
+      description = "Bill Soudan";
+      # dialout -- qmk flashing for /dev/ttyACM0
+      extraGroups = [ "networkmanager" "wheel" "dialout" "storage" ];
+      #packages = with pkgs; [
+      #  thunderbird
+      #];
+    };
+    storage = {
+      uid = 9999;
+      isSystemUser = true;
+      description = "storage user";
+      group = "storage";
+    };
   };
 
   environment.systemPackages = with pkgs; [
@@ -63,6 +74,10 @@
   environment.variables = {
     EDITOR = "micro";
   };
+
+  environment.extraInit = ''
+    umask 002
+  '';
   
   # mounts /usr/bin and provides all system executables
   services.envfs.enable = true;
