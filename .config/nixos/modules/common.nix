@@ -68,7 +68,9 @@
      wget
      curl
      #sops
-    file
+     file
+     mosh
+     tcpdump
   ];
 
   environment.variables = {

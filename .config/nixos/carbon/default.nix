@@ -106,7 +106,7 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   services.openvpn.servers = {
-    stoneledge = { config = '' config /etc/nixos/openvpn-carbon.conf ''; };
+    stoneledge = { config = '' config /etc/nixos/carbon/openvpn.conf ''; };
   };
 
   fonts.packages = with pkgs; [
