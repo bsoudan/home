@@ -88,6 +88,7 @@
       virtual_alias_maps = "inline:{ {root=bill@soudan.net} {bsoudan=bill@soudan.net} }";
     };
   };
+  sops.secrets."postfix/sasl_passwd" = {};
 
   services.unifi = {
     enable = true;

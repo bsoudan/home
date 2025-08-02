@@ -8,19 +8,22 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
+
   outputs = { nixpkgs, sops-nix, ... }: {
+
     nixosConfigurations.carbon = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
+        sops-nix.nixosModules.sops
         ./modules/common.nix
         ./carbon
       ];
     };
+
     nixosConfigurations.core = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         sops-nix.nixosModules.sops
-        ./core/sops.nix
         ./modules/common.nix
         ./core
       ];

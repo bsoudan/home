@@ -8,6 +8,8 @@
 
 { pkgs, ... }: {
 
+  sops.defaultSopsFile = ../secrets.yaml;
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.trusted-users = [ "root" "@wheel" ];
   # Allow unfree packages

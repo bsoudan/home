@@ -105,8 +105,32 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
+  environment.etc."openvpn/carbon-client.ovpn" = {
+    text = ''
+      dev tun
+      remote "soudan.net"
+      port ${toString port}
+      redirect-gateway def1
+
+      cipher AES-256-CBC
+      auth-nocache
+
+      comp-lzo
+      keepalive 10 60
+      resolv-retry infinite
+      nobind
+      persist-key
+      persist-tun
+      secret ${config.sops.secrets.openvpn-secret.path}
+
+      ifconfig 10.8.0.2 10.8.0.1
+    '';
+
+    mode = "600";
+  };
+
   services.openvpn.servers = {
-    stoneledge = { config = '' config /etc/nixos/carbon/openvpn.conf ''; };
+    stoneledge = { config = '' config /etc/openvpn/carbon-client.ovpn ''; };
   };
 
   fonts.packages = with pkgs; [
