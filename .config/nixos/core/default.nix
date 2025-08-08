@@ -29,9 +29,6 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  services.printing.enable = true;
-
-
   environment.systemPackages = with pkgs; [
     smartmontools
     parted
@@ -191,6 +188,20 @@
               description = "ZWave JS UI";
             };
           }
+          {
+            cups = {
+              icon = "printer";
+              href = "http://core.home:631";
+              description = "CUPS Web UI";
+            };
+          }
+          {
+            netdata = {
+              icon = "netdata";
+              href = "http://core.home:19999";
+              description = "NetData Web UI";
+            };
+          }
         ];
       }
     ];
@@ -285,7 +296,70 @@
     };
   };
 
+  # to add to windows, http://core.home:631/printers/brother
+  services.printing = {
+    enable = true;
+    drivers = [ pkgs.brlaser ];
 
+    # sharing
+    listenAddresses = [ "*:631" ];
+    allowFrom = [ "all" ];
+    browsing = true;
+    defaultShared = true;
+    openFirewall = true;
+
+    # allow http connections from any name so http://core.home:631 works
+    extraConf = ''
+      ServerAlias *
+    '';
+  };
+
+  hardware.printers.ensurePrinters = [{
+    name = "brother";
+    location = "127 Stoneledge Way";
+    deviceUri = "usb://Brother/HL-L2320D%20series?serial=U63877L6N225309"; # lpinfo -v
+    model = "drv:///brlaser.drv/brl2320d.ppd"; # lpinfo -m | grep brlaser
+  }];
+  hardware.printers.ensureDefaultPrinter = "brother";
+
+  # no declarative smbpasswd, need to run 'smbpasswd -a username' to add
+  services.samba = {
+    enable = true;
+    package = pkgs.samba4Full;
+    openFirewall = true;
+    settings = {
+      homes = {
+        comment = "Home Directories";
+        browseable = "no";
+        "read only" = "no";
+        "valid users" = "%S";
+      };
+      storage = {
+        comment = "Storage";
+        browseable = "yes";
+        writeable = "true";
+        path = "/srv/storage";
+        "create mask" = 0664;
+        "force create mode" = 0664;
+        "directory mask" = 2775;
+        "force directory mode" = 2775;
+      };
+    };
+  };
+
+  services.ntp = {
+    enable = true;
+    servers = [ "0.north-america.pool.ntp.org" "1.north-america.pool.ntp.org" "2.north-america.pool.ntp.org" "3.north-america.pool.ntp.org" ];
+  };
+
+  # fileSystems."/mnt/storage" = {
+  #     device = "//nas/storage";
+  #     fsType = "cifs";
+  #     options = let
+  #         # this line prevents hanging on network split
+  #         automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+  #     in ["${automount_opts},credentials=/etc/nixos/smb-secrets"];
+  # };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
@@ -308,3 +382,150 @@
 
 }
 
+# {
+#   imports = [ ./hardware-configuration.nix ./openvpn-server.nix ];
+# #  imports = [ ./hardware-configuration.nix ./valheim.nix];
+
+#   environment.systemPackages = with pkgs; [
+#     git
+#     tcpdump
+#     strace
+#     binutils
+#     lsof
+#     netcat
+#     traceroute
+#     file
+#     which
+#     screen
+#     wget
+#     curl
+#     unzip
+#     bzip2
+#     gnupg1
+#     zip
+#     patchelf
+#     micro
+#     steamcmd
+#     tmux
+#     iotop
+#     iftop
+#     nethogs
+#     python3
+#     sysstat
+#   ]; 
+
+#   #  consoleFont = "lat9w-16";
+#   console = {
+#     font = "Lat2-Terminus16";
+#     keyMap = "dvorak";
+#   };
+
+#   networking = {
+
+#     interfaces.ens3 = {
+#       useDHCP = false;
+#       ipv4.addresses = [
+#         { address = "172.27.1.3"; prefixLength = 24; }
+#       ];
+#     };
+
+#     defaultGateway = "172.27.1.1";
+#     nameservers = ["8.8.8.8"];  
+
+#     firewall.enable = false;
+
+#     extraHosts = ''
+#         172.27.1.2 nas
+#     '';
+#   };
+
+#   services.openssh.enable = true;
+
+#   nixpkgs.config.allowUnfree = true;
+#   nix.readOnlyStore = false;
+
+#   services.avahi = {
+#     enable = true;
+#     nssmdns = true;
+#     openFirewall = true;
+#     publish = {
+#       enable = true;
+#       addresses = true;
+#       domain = true;
+#       hinfo = true;
+#       userServices = true;
+#       workstation = true;
+#     };
+#   };
+
+#   environment.shellAliases = {
+#     "sys" = "systemctl";
+#     "j" = "journalctl";
+#     "xyz" = builtins.getEnv "XYZ";
+#   };
+
+#  services.unifi = {
+#    enable = true;
+#    unifiPackage = pkgs.unifi8;
+#  };
+
+
+  # virtualisation.docker.enable = true;
+  # users.extraGroups.docker.members = [ "bsoudan" ];
+ 
+#  services.home-assistant = {
+#    enable = true;
+#
+#    package = (pkgs.home-assistant.override {
+#      extraPackages = ps: [
+#        ps.python_openzwave
+#      ];
+#    });
+#
+#    config.homeassistant = {
+#      name = "127 Stoneledge Way";
+#      latitude = "45.154425";
+#      longitude = "-77.471735";
+#      elevation = "152";
+#      unit_system = "imperial";
+#      time_zone = "America/New_York";
+#    };
+#
+#    config.zwave = {
+#      usb_path = "/dev/ttyUSB0";
+#      network_key = "0x97, 0x07, 0xAB, 0x9E, 0x53, 0x3C, 0x66, 0x92, 0x21, 0xF8, 0xEE, 0xF3, 0x4E, 0xC8, 0x52, 0x9B";
+#    };
+#  };
+
+#  services.terraria = {
+#    enable = true;
+#    password = "sparkle585";
+#    messageOfTheDay = "Welcome to The Dirty Hinterlands!  No noobs allowed.";
+#    autoCreatedWorldSize = "medium";
+#    openFirewall = true;
+#  };
+#  users.users.terraria.group = "terraria";
+
+#   nixpkgs.config = {
+#     packageOverrides = super: let self = super.pkgs; in {
+#       terraria-server = super.terraria-server.overrideAttrs (oldAttrs: rec {
+#           version = "1.4.3.6";
+#           urlVersion = "1436";
+#           src = super.fetchurl {
+#               url = "https://terraria.org/api/download/pc-dedicated-server/terraria-server-${urlVersion}.zip";
+#               sha256 = "sha256-OFI7U6Mqu09pIbgJQs0O+GS8jf1uVuhAVEJhYNYXrBE=";
+#           };
+#       });
+#     };
+#   };
+
+#   services.syncthing = {
+#     enable = true;
+#     openDefaultPorts = true;
+
+#     settings.gui = {
+#       user = "myuser";
+#       password = "mypassword";
+#     };
+#   };
+# }
