@@ -20,7 +20,7 @@
     loader.efi.canTouchEfiVariables = true;
 
     # https://ar.al/2022/08/30/dear-linux-privileged-ports-must-die/
-    kernel.sysctl."net.ipv4.ip_unprivileged_port_start" = 0;             
+    kernel.sysctl."net.ipv4.ip_unprivileged_port_start" = 0;
   };
 
   time.timeZone = "America/New_York";
@@ -42,19 +42,23 @@
 
   console.keyMap = "dvorak";
 
-  users.groups.storage.gid = 9999;
-
+  users.mutableUsers = false;
   users.users = {
+    # run mkpasswd to create a new password
+    # https://mynixos.com/nixpkgs/option/users.users.%3Cname%3E.hashedPassword
+    root.hashedPassword = "$y$j9T$QugK5WbhgmlVeNDTe.zxh/$id64LnpmYZKrzlG6HWZZ6AwnFhFumKuQlGGGDHt.bD8";
+
     bsoudan = {
       uid = 1000;
       isNormalUser = true;
       description = "Bill Soudan";
       # dialout -- qmk flashing for /dev/ttyACM0
       extraGroups = [ "networkmanager" "wheel" "dialout" "storage" ];
-      #packages = with pkgs; [
-      #  thunderbird
-      #];
+      hashedPassword = "$y$j9T$QugK5WbhgmlVeNDTe.zxh/$id64LnpmYZKrzlG6HWZZ6AwnFhFumKuQlGGGDHt.bD8";
+      subUidRanges = [{ startUid = 100000; count = 65536; }];
+      subGidRanges = [{ startGid = 100000; count = 65536; }];
     };
+
     storage = {
       uid = 9999;
       isSystemUser = true;
@@ -62,6 +66,8 @@
       group = "storage";
     };
   };
+
+  users.groups.storage.gid = 9999;
 
   environment.systemPackages = with pkgs; [
      git
@@ -82,7 +88,7 @@
   environment.extraInit = ''
     umask 002
   '';
-  
+
   # mounts /usr/bin and provides all system executables
   services.envfs.enable = true;
 
@@ -98,7 +104,7 @@
       e = "$EDITOR";
   };
 
-  services.netdata.enable = true;  
+  services.netdata.enable = true;
   services.netdata.package = pkgs.netdata.override {
     withCloudUi = true;
   };
