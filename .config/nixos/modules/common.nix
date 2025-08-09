@@ -79,6 +79,7 @@
      file
      mosh
      tcpdump
+     lsof
   ];
 
   environment.variables = {
