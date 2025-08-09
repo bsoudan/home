@@ -134,12 +134,12 @@
     };
   };
 
-  services.cockpit = {
-    enable = true;
-    allowed-origins = [
-      "https://*"
-    ];
-  };
+  #services.cockpit = {
+  #  enable = true;
+  #  allowed-origins = [
+  #    "https://*"
+  #  ];
+  #};
 
   services.scrutiny = {
     enable = true;
@@ -159,12 +159,61 @@
 
     services = [
       {
-        "Services" = [
+        "Media" = [
           {
-            scrutiny = {
-              icon = "scrutiny";
-              href = "http://core.home:8090";
-              description = "Scrutiny Description";
+            transmission = {
+              icon = "transmission";
+              href = "http://core.home:9091";
+              description = "Transmission Web Bittorrent Client";
+              widget = {
+                type = "transmission";
+                url = "http://core.home:9091";
+              };
+            };
+          }
+          {
+            plex = {
+              icon = "Plex";
+              href = "http://core.home:32400";
+              description = "Plex Media Portal";
+              widget = {
+                type = "plex";
+                url = "http://core.home:32400";
+                key = "trsxVHp6j3_BBwLeV7ZD";
+              };
+            };
+          }
+        ];
+      }
+      {
+        "Home" = [
+          {
+            "brother laser printer" = {
+              icon = "printer";
+              href = "http://core.home:631";
+              description = "CUPS Web Portal";
+            };
+          }
+          {
+            zwave-js = {
+              icon = "zwave";
+              href = "http://core.home:8091";
+              description = "ZWave Web Portal";
+            };
+          }
+        ];
+      }
+      {
+        "Admin" = [
+          {
+            netdata = {
+              icon = "netdata";
+              href = "http://core.home:19999";
+              description = "NetData Web UI";
+              widget = {
+                type = "netdata";
+                url = "http://core.home:19999";
+              };
             };
           }
           {
@@ -172,50 +221,32 @@
               icon = "unifi-controller";
               href = "https://core.home:8443";
               description = "UniFi Controller";
+              # https://core.home:8443/api/stat/sites seems to give data, but the portal is adding /proxy/network
+              # widget = {
+              #   type = "unifi";
+              #   url = "https://core.home:8443";
+              #   key = "uB7u4Z1Fqm5WRDyI7D2B_k1h6tn9CznU";
+              # };
             };
           }
           {
-            cockpit = {
-              icon = "cockpit";
-              href = "https://core.home:9090";
-              description = "Cockpit Admin Console";
+            scrutiny = {
+              icon = "scrutiny";
+              href = "http://core.home:8090";
+              description = "Hard Drive monitor";
+              widget = {
+                type = "scrutiny";
+                url = "http://core.home:8090";
+              };
             };
           }
-          {
-            zwave-js-ui = {
-              icon = "zwave";
-              href = "http://core.home:8091";
-              description = "ZWave JS UI";
-            };
-          }
-          {
-            cups = {
-              icon = "printer";
-              href = "http://core.home:631";
-              description = "CUPS Web UI";
-            };
-          }
-          {
-            netdata = {
-              icon = "netdata";
-              href = "http://core.home:19999";
-              description = "NetData Web UI";
-            };
-          }
-          {
-            transmission = {
-              icon = "transmission";
-              href = "http://core.home:9091";
-              description = "Transmission Web UI";
-            };
-          }
-          {
-            plex = {
-              icon = "Plex";
-              href = "http://core.home:32400";
-              description = "Plex Web UI";
-            };
-          }
+          #{
+          #  cockpit = {
+          #    icon = "cockpit";
+          #    href = "https://core.home:9090";
+          #    description = "Cockpit Admin Console";
+          #  };
+          #}
         ];
       }
     ];
@@ -228,7 +259,7 @@
       }
       {
         greeting = {
-          text = "core.soudan.net";
+          text = "core.home";
         };
       }
       {
@@ -256,12 +287,6 @@
         resources = {
           disk = "/";
           label = "root";
-        };
-      }
-      {
-        resources = {
-          disk = "/srv/vault";
-          label = "vault";
         };
       }
       {
