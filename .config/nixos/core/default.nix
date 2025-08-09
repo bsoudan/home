@@ -202,6 +202,13 @@
               description = "NetData Web UI";
             };
           }
+          {
+            transmission = {
+              icon = "transmission";
+              href = "http://core.home:9091";
+              description = "Transmission Web UI";
+            };
+          }
         ];
       }
     ];
@@ -350,6 +357,16 @@
   services.ntp = {
     enable = true;
     servers = [ "0.north-america.pool.ntp.org" "1.north-america.pool.ntp.org" "2.north-america.pool.ntp.org" "3.north-america.pool.ntp.org" ];
+  };
+
+  services.transmission = {
+    enable = true;
+    settings = {
+      rpc-bind-address = "0.0.0.0";
+      rpc-whitelist = "*";
+      rpc-host-whitelist = "*";
+    };
+    webHome = pkgs.flood-for-transmission;
   };
 
   # fileSystems."/mnt/storage" = {
