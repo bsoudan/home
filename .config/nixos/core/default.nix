@@ -357,6 +357,17 @@
         "force create mode" = 0664;
         "directory mask" = 2775;
         "force directory mode" = 2775;
+        "valid users" = "bsoudan";
+      };
+      media = {
+        comment = "Media";
+        browseable = "yes";
+        writeable = "true";
+        path = "/srv/storage/media";
+        "create mask" = 0664;
+        "force create mode" = 0664;
+        "directory mask" = 2775;
+        "force directory mode" = 2775;
       };
     };
   };
@@ -405,6 +416,14 @@
 
   services.plex.enable = true;
   users.users.plex.extraGroups = [ "storage" ];
+
+  users.users.kyle = {
+    uid = 1010;
+    isNormalUser = true;
+    description = "Kyle Gotowka";
+    extraGroups = [ "storage" ];
+    hashedPassword = "$y$j9T$P.afKWIQkjI7LszgF4JO7/$9ajt0SbkggUCBWwi3Q2YbpfgQHfA/Os5LzvJtdEIVRC";
+  };
 
   # fileSystems."/mnt/storage" = {
   #     device = "//nas/storage";
