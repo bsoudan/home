@@ -415,6 +415,7 @@
       ratio-limit = 2;
       ratio-limit-enabled = true;
       download-dir = "/srv/storage/media/downloads";
+      incomplete-dir = "/srv/storage/media/incomplete";
 
       # 2025/08/09 -- greenlight is 570 Mbps up & down
       #   400 Mb/s -> 50000 kB/s
@@ -426,6 +427,7 @@
     };
     webHome = pkgs.flood-for-transmission;
   };
+  users.users.transmission.extraGroups = [ "storage" ];
 
   # on first run, web interface was empty, only online plex resources
   #
