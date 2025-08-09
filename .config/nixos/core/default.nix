@@ -16,7 +16,7 @@
   nixpkgs.config.allowUnfree = true;
 
   networking = {
-    hostName = "core"; 
+    hostName = "core";
     domain = "soudan.net";
     hostId = "c0dec08e";
   };
@@ -158,7 +158,7 @@
     };
 
     services = [
-      { 
+      {
         "Services" = [
           {
             scrutiny = {
@@ -209,6 +209,13 @@
               description = "Transmission Web UI";
             };
           }
+          {
+            plex = {
+              icon = "Plex";
+              href = "http://core.home:32400";
+              description = "Plex Web UI";
+            };
+          }
         ];
       }
     ];
@@ -218,17 +225,17 @@
         greeting = {
           text = "|";
         };
-      } 
+      }
       {
         greeting = {
           text = "core.soudan.net";
         };
-      } 
+      }
       {
         greeting = {
           text = "|";
         };
-      } 
+      }
       {
         resources = {
           cpu = true;
@@ -244,7 +251,7 @@
         greeting = {
           text = "|";
         };
-      } 
+      }
       {
         resources = {
           disk = "/";
@@ -267,7 +274,7 @@
         greeting = {
           text = "|";
         };
-      } 
+      }
       {
         openmeteo = {
           cache = 5;
@@ -299,7 +306,7 @@
       KEY_S2_Authenticated = "B5FA83A5DE14FCE156A0E8643F5BEE61";
       KEY_S2_AccessControl = "8AF1199CEE462C4E2F5CA3D38FD834FF";
       KEY_LR_S2_Authenticated = "126FAA2798F3BE3472745C8A26736083";
-      KEY_LR_S2_AccessControl = "927397A10AD41586416CB0378AEA8710"; 
+      KEY_LR_S2_AccessControl = "927397A10AD41586416CB0378AEA8710";
     };
   };
 
@@ -361,13 +368,43 @@
 
   services.transmission = {
     enable = true;
+    # https://github.com/transmission/transmission/blob/main/docs/Editing-Configuration-Files.md
+    # /var/lib/transmission/.config/transmission-daemon/settings.json
+    # https://github.com/eternnoir/transmission/blob/master/settings.json
+
     settings = {
       rpc-bind-address = "0.0.0.0";
       rpc-whitelist = "*";
       rpc-host-whitelist = "*";
+      ratio-limit = 2;
+      ratio-limit-enabled = true;
+      download-dir = "/srv/storage/media/downloads";
+
+      # 2025/08/09 -- greenlight is 570 Mbps up & down
+      #   400 Mb/s -> 50000 kB/s
+
+      speed-limit-down = 50000;
+      speed-limit-down-enabled = true;
+      speed-limit-up = 50000;
+      speed-limit-up-enabled = true;
     };
     webHome = pkgs.flood-for-transmission;
   };
+
+  # on first run, web interface was empty, only online plex resources
+  #
+  # had to 'claim' the media server by logging in and running
+  # curl -X POST 'http://127.0.0.1:32400/myplex/claim?token=claim-s2fNs1zvMCYHJzjrPG57'
+  # claim token came from https://account.plex.tv/claim
+  # validated with curl http://localhost:32400/identity
+  #   <?xml version="1.0" encoding="UTF-8"?>
+  #   <MediaContainer size="0" apiVersion="0.2.0" claimed="1" machineIdentifier="7920f7dbf88b58df1f41ec1f11db692769a0927a" version="1.41.6.9685-d301f511a">
+  #   </MediaContainer>
+  # claimed was 0 before
+  # then, when i logged into web interface, setup wizard ran to set up media server
+
+  services.plex.enable = true;
+  users.users.plex.extraGroups = [ "storage" ];
 
   # fileSystems."/mnt/storage" = {
   #     device = "//nas/storage";
@@ -429,7 +466,7 @@
 #     nethogs
 #     python3
 #     sysstat
-#   ]; 
+#   ];
 
 #   #  consoleFont = "lat9w-16";
 #   console = {
@@ -447,7 +484,7 @@
 #     };
 
 #     defaultGateway = "172.27.1.1";
-#     nameservers = ["8.8.8.8"];  
+#     nameservers = ["8.8.8.8"];
 
 #     firewall.enable = false;
 
@@ -489,7 +526,7 @@
 
   # virtualisation.docker.enable = true;
   # users.extraGroups.docker.members = [ "bsoudan" ];
- 
+
 #  services.home-assistant = {
 #    enable = true;
 #
