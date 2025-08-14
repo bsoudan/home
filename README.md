@@ -12,6 +12,15 @@
   * ehome -- edit .config/home-manager/home.nix && home-manager switch
 
 
+## generations & cleanup
+
+    # show all generations
+    nix-env --list-generations --profile /nix/var/nix/profiles/system/
+
+    # cleanup old generations
+    nix-collect-garbage --delete-older-than 180d
+
+
 # Initial setup
 
     # https://github.com/emilyst/home#setup

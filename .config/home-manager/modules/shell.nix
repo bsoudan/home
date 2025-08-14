@@ -24,7 +24,7 @@
 
   home.shellAliases = {
     e = "$EDITOR";
-    home = "git --work-tree=$HOME --git-dir=$HOME/.local/var/git-home";
+    home = "git --work-tree=$HOME --git-dir=$HOME/.local/var/lib/git-home";
   };
 
   home.packages = with pkgs; [

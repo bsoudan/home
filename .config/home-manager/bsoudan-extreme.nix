@@ -1,4 +1,4 @@
-{ home-manager, pkgs }:
+{ home-manager, pkgs, ... }@x :
 home-manager.lib.homeManagerConfiguration {
   inherit pkgs;
 
@@ -8,12 +8,6 @@ home-manager.lib.homeManagerConfiguration {
     ./modules/sysadmin.nix
     ./modules/gui.nix
 
-    ./carbon
+    ./extreme
   ];
-
-  # extraSpecialArgs = {
-  #   Optionally use extraSpecialArgs
-  #   to pass through arguments to home.nix
-  # }
 }
-

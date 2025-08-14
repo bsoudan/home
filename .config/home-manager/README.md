@@ -1,6 +1,17 @@
 
 # Notes
 
+~/.config/home-manager > home-manager expire-generations '-180 days'
+Removing generation 1
+Removing generation 4
+Removing generation 7
+Removing generation 3
+Removing generation 6
+Removing generation 2
+Removing generation 5
+
+~/.config/home-manager > home-manager generations
+
     # link the configuration file in current directory to the specified location in home directory
     # home.file.".config/i3/wallpaper.jpg".source = ./wallpaper.jpg;
 
