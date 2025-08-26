@@ -1,0 +1,4 @@
+#define COMBO_ONLY_FROM_LAYER 0
+
+#define RETRO_TAPPING_PER_KEY
+
