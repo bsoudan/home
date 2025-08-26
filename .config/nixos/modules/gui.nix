@@ -67,6 +67,7 @@
     telegram-desktop
     discord
     godot_4
+    lan-mouse
 
     # pulseaudio tools
     pamixer
@@ -76,6 +77,10 @@
     # pipewire tools
     helvum
     qpwgraph
+  ];
+
+  networking.firewall.allowedUDPPorts = [
+    4242 # lan-mouse
   ];
 
   environment.sessionVariables = {

@@ -108,4 +108,6 @@
   services.netdata.package = pkgs.netdata.override {
     withCloudUi = true;
   };
+
+  services.sshd.enable = true;
 }

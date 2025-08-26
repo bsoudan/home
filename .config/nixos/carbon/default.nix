@@ -6,13 +6,14 @@
 #  * /root/.config/micro/settings.json & bindings.json manually linked to ~bsoudan/.config/micro/
 #
 
-{ pkgs, ... }: {
+{ config, pkgs, ... }: {
 
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
 
+  boot = {
     plymouth = {
       enable = true;
     };
@@ -38,7 +39,7 @@
     text = ''
       dev tun
       remote "soudan.net"
-      port ${toString port}
+      port 1194
       redirect-gateway def1
 
       cipher AES-256-CBC
@@ -57,6 +58,8 @@
 
     mode = "600";
   };
+
+  sops.secrets.openvpn-secret = {};
 
   services.openvpn.servers = {
     stoneledge = { config = '' config /etc/openvpn/carbon-client.ovpn ''; };
