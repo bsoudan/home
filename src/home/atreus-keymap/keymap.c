@@ -14,7 +14,6 @@ enum custom_keycodes {
 
 #include "g/keymap_combo.h"
 
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT(
         KC_QUOT, KC_COMM, KC_DOT, KC_P,  KC_Y,                  KC_F,   KC_G,  KC_C,  KC_R,  KC_L,
@@ -38,7 +37,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     // nav layer
     [3] = LAYOUT(
-        KC_ESC, ALT_TAB,    LCTL(KC_C),    LCTL(KC_V), KC_BTN3,                                KC_ESC,  KC_PGUP,   KC_UP, KC_PGDN, KC_END,
+        KC_ESC, ALT_TAB,    LCTL(KC_C),    LCTL(KC_V), KC_BTN3,                                KC_ESC,  KC_PGUP,   KC_UP, KC_PGDN, KC_NO,
         LALT(KC_1), LALT(KC_2), LALT(KC_3), LALT(KC_4), LALT(KC_5),                            KC_NO,  KC_LEFT, KC_DOWN, KC_RGHT,     KC_NO,
         KC_LSFT,      KC_LCTL,    KC_LGUI,    KC_LALT,      KC_ENTER,     _______,   _______, LSFT(KC_Y),  KC_HOME,   KC_NO,  KC_END, LCTL(KC_Z),
         _______,      _______,    _______,    _______,      _______,      _______,   _______,      _______,  _______, _______, _______,      _______
@@ -178,9 +177,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
             }
             break;
-        case LSFT_T(KC_COLN):
+        case RSFT_T(KC_PIPE):
             if (record->tap.count && record->event.pressed) {
-                register_code16(KC_COLN);
+                register_code16(KC_PIPE);
                 return false;
             }
             break;
@@ -205,10 +204,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     if (IS_LAYER_ON(5) && lmod_active) {
         switch (keycode) {
-            case LGUI_T(KC_SCLN):
-            case LALT_T(KC_Q):
-            case LCTL_T(KC_J):
-            case LSFT_T(KC_K):
+            case LSFT_T(KC_SCLN):
+            case LCTL_T(KC_Q):
+            case LGUI_T(KC_J):
+            case LALT_T(KC_K):
                 if (!record->tap.count && record->event.pressed) {
                     unregister_code(KC_LSFT);
                     lmod_active = false;
@@ -218,12 +217,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
-    if (IS_LAYER_ON(6) && rmod_active) {
+    if (IS_LAYER_ON(7) && rmod_active) {
         switch (keycode) {
-            case RSFT_T(KC_M):
-            case RCTL_T(KC_W):
-            case RALT_T(KC_V):
-            case RGUI_T(KC_Z):
+            case RALT_T(KC_M):
+            case RGUI_T(KC_W):
+            case RCTL_T(KC_V):
+            case RSFT_T(KC_Z):
                 if (!record->tap.count && record->event.pressed) {
                     unregister_code(KC_RSFT);
                     rmod_active = false;
