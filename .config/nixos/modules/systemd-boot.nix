@@ -6,5 +6,5 @@
     loader.efi.canTouchEfiVariables = true;
   };
 
-};
+}
 
