@@ -25,7 +25,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [1] = LAYOUT(
         KC_GRV,  KC_LT,   KC_GT,   KC_DLR,  KC_PERC,                     KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_SLSH,
         KC_EXLM, KC_AT,   KC_HASH, KC_DQUO, KC_COLN,                     KC_EQL,  KC_MINS, KC_LCBR, KC_RCBR, KC_QUES,
-        LSFT_T(KC_COLN),  LCTL_T(KC_BSLS),   LGUI_T(KC_BSLS), LALT_T(KC_TILDE), KC_CIRC,  _______,   _______, KC_PLUS, RALT_T(KC_UNDS), RGUI_T(KC_LBRC), RCTL_T(KC_RBRC), RSFT_T(KC_PIPE),
+        LCTL_T(KC_COLN),  LSFT_T(KC_BSLS),   LGUI_T(KC_BSLS), LALT_T(KC_TILDE), KC_CIRC,  _______,   _______, KC_PLUS, RALT_T(KC_UNDS), RGUI_T(KC_LBRC), RSFT_T(KC_RBRC), RCTL_T(KC_PIPE),
         _______,  _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
     ),
     // num layer
@@ -46,14 +46,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [4] = LAYOUT(
         KC_SYSTEM_SLEEP, _______, KC_PRINT_SCREEN, KC_SCROLL_LOCK, KC_PAUSE,                     KC_AUDIO_MUTE, _______, KC_AUDIO_VOL_UP, _______, KC_BRIGHTNESS_UP,
         _______, _______, KC_INSERT, _______, _______,                     _______, KC_MEDIA_PREV_TRACK, KC_AUDIO_VOL_DOWN, KC_MEDIA_NEXT_TRACK, KC_BRIGHTNESS_DOWN,
-        KC_LSFT, KC_LCTL, KC_LGUI, KC_LALT, _______, _______,   _______, _______, KC_RALT, RGUI_T(KC_MEDIA_PLAY_PAUSE), RCTL_T(KC_MEDIA_STOP), KC_RSFT,
+        KC_LSFT, KC_LCTL, KC_LGUI, KC_LALT, _______, _______,   _______, _______, KC_RALT, RGUI_T(KC_MEDIA_PLAY_PAUSE), RSFT_T(KC_MEDIA_STOP), KC_RSFT,
         KC_SYSTEM_SLEEP, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, QK_BOOT
     ),
     // lmod layer
     [5] = LAYOUT(
         _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
-        LSFT_T(KC_SCLN), LCTL_T(KC_Q), LGUI_T(KC_J), LALT_T(KC_K), _______, _______,   _______, _______, _______, _______, _______, _______,
+        LCTL_T(KC_SCLN), LSFT_T(KC_Q), LGUI_T(KC_J), LALT_T(KC_K), _______, _______,   _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
     ),
     // go layer
@@ -67,7 +67,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [7] = LAYOUT(
         _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______,   _______, _______, RALT_T(KC_M), RGUI_T(KC_W), RCTL_T(KC_V), RSFT_T(KC_Z),
+        _______, _______, _______, _______, _______, _______,   _______, _______, RALT_T(KC_M), RGUI_T(KC_W), RSFT_T(KC_V), RCTL_T(KC_Z),
         _______, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
     ),
     /*
@@ -177,7 +177,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
             }
             break;
-        case RSFT_T(KC_PIPE):
+        case RCTL_T(KC_PIPE):
             if (record->tap.count && record->event.pressed) {
                 register_code16(KC_PIPE);
                 return false;
@@ -204,8 +204,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     if (IS_LAYER_ON(5) && lmod_active) {
         switch (keycode) {
-            case LSFT_T(KC_SCLN):
-            case LCTL_T(KC_Q):
+            case LCTL_T(KC_SCLN):
+            case LSFT_T(KC_Q):
             case LGUI_T(KC_J):
             case LALT_T(KC_K):
                 if (!record->tap.count && record->event.pressed) {
@@ -221,8 +221,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         switch (keycode) {
             case RALT_T(KC_M):
             case RGUI_T(KC_W):
-            case RCTL_T(KC_V):
-            case RSFT_T(KC_Z):
+            case RSFT_T(KC_V):
+            case RCTL_T(KC_Z):
                 if (!record->tap.count && record->event.pressed) {
                     unregister_code(KC_RSFT);
                     rmod_active = false;
