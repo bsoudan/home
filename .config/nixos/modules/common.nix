@@ -110,4 +110,9 @@
   };
 
   services.sshd.enable = true;
+
+  # for keychron k11
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0664", GROUP="dialout"
+  '';
 }
