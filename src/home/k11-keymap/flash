@@ -1,0 +1,6 @@
+
+echo
+echo Hold ESC while restarting keyboard to enable bootloader
+echo
+
+cd qmk && make keychron/k11_max/ansi_encoder/rgb:bsoudan:flash
