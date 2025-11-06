@@ -1,0 +1,17 @@
+
+# block all files & directories in the same directory as .gitignore
+/*
+
+# include some files
+!.gitignore.home
+!.bashrc.home
+!README.md
+
+# include .local/bin/ but not other files/directories in .local
+!.local/
+.local/*
+!.local/bin/
+
+!.config/
+.config/*
+!.config/home/

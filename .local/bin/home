@@ -1,0 +1,160 @@
+#!/usr/bin/env bash
+#
+# script to manage home directory using a git repository.
+#
+
+set -eou pipefail
+
+# default configuration, can be overriden by adding to ~/.config/home/env
+HOME_LOCALREPO=~/.local/var/home.git
+
+usage() {
+   echo "usage: $(basename $0) <command>"
+   echo
+   echo "Commands:"
+   echo "    init:          create local home repository"
+   echo "    init <origin>: install home repository from git repository"
+   echo "    uninstall:     remove home repository"
+   echo
+   echo "All other commands are passed through to git."
+   echo
+   exit 1
+}
+
+info() {
+    >&2 echo $(tput bold)$(basename $0):$(tput sgr0) "$*"
+}
+
+TEMPDIR=$(mktemp -d)
+trap 'rm -rf "$TEMPDIR"' EXIT
+
+git_home() {
+   git --work-tree=$HOME --git-dir=$HOME_LOCALREPO -c core.excludesfile=$HOME/.config/home/gitignore "$@"
+}
+
+foreach_append() {
+   local append_dir=~/.config/home/append
+   for file in $(cd $append_dir; find . -type f | cut -c 3-); do
+      $1 $file $append_dir/$file
+   done
+}
+
+cmd_init() {
+
+   [ $# -gt 1 ] && {
+      info usage: init [<origin>]
+      exit 1
+   }
+
+   HOME_ORIGIN=
+   [ $# -eq 1 ] && HOME_ORIGIN=$1
+
+   [ -f "$HOME_LOCALREPO/HEAD" ] || {
+      info initializing home git repository at $HOME_LOCALREPO...
+
+      cd ~
+      mkdir -p $(dirname $HOME_LOCALREPO)
+      git_home init -b main
+      git_home config core.excludesfile $HOME/.config/home/gitignore
+
+      [ ! -z "$HOME_ORIGIN" ] && {
+         info pulling from origin $HOME_ORIGIN...
+
+         git_home remote add origin $HOME_ORIGIN
+         git_home pull origin main || {
+            rm -rf $HOME_GITREPO
+            info pull failed, aborted.
+            exit 1
+         }
+      }
+   }
+
+   cd ~
+
+   append() {
+      local file=$1
+      local srcfile=$2
+
+      local marker='# home-install'
+      local tempfile=$TEMPDIR/$(basename $file)
+
+      info appending to $file from $srcfile...
+
+      [ -f "$file" ] && sed -e "/${marker}$/d" $file >$tempfile
+
+      # strip leading whitespace, strip empty lines, add marker suffix
+      cat $srcfile | sed -e's/^[[:space:]]*//' -e '/^$/d' -e"s|$| # $srcfile ${marker}|g" >>$tempfile
+
+      mv -f $tempfile $file
+   }
+
+   foreach_append append
+
+   info home installed.
+}
+
+cmd_uninstall() {
+
+   [ $# -eq 0 ] && {
+      [ $(git_home status --porcelain=1 | wc -l) -ne 0 ] && {
+         info local changes detected, aborting.
+         #exit 1
+      }
+
+      [ $(git_home remote | wc -l) -eq 0 ] && {
+         info no remote copies are configured, aborting.
+         #exit 1
+      }
+   }
+
+   [ $# -gt 0 ] && [ "$1" != "--force" ] && {
+      info uninstall only takes --force argument
+      exit 1
+   }
+
+   info tracked files:
+
+   git_home ls-files
+
+   echo
+   echo "This command will erase all checked out files and remove the $HOME_LOCALREPO repository."
+   echo -n "To confirm, enter the full repository path: "
+   read -r confirm
+   [ "$confirm" != "$HOME_LOCALREPO" ] && {
+      echo "aborted."
+      exit 255
+   }
+
+   remove() {
+      local file=$1
+      local marker='# home-install'
+      local tempfile=$TEMPDIR/$(basename $file)
+
+      info removing appends from $file...
+
+      [ -f "$file" ] && sed -e "/${marker}$/d" $file >$tempfile
+
+      mv -f $tempfile $file
+   }
+
+   foreach_append remove
+
+   info uninstalling files...
+   git_home ls-files -z | xargs -0 rm
+
+   info removing git repo $HOME_LOCALREPO...
+   rm -rf $HOME_LOCALREPO
+
+   info complete.
+}
+
+[ $# -eq 0 ] && usage
+
+if [[ $(type -t cmd_$1) != function ]]; then
+   git_home "$@"
+else
+   COMMAND=$1
+   shift
+
+   cmd_$COMMAND "$@"
+fi
