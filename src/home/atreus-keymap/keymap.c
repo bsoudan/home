@@ -5,7 +5,6 @@
 
 enum custom_keycodes {
   ALT_TAB = SAFE_RANGE,
-  CTL_TAB,
   LMOD,
   RMOD
 };
@@ -37,7 +36,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     // nav layer
     [3] = LAYOUT(
-        KC_ESC, ALT_TAB,    LCTL(KC_C),    LCTL(KC_V), KC_BTN3,                                KC_ESC,  KC_PGUP,   KC_UP, KC_PGDN, KC_NO,
+        KC_ESC, ALT_TAB,    LCTL(KC_C),    LCTL(KC_V), MS_BTN3,                                KC_ESC,  KC_PGUP,   KC_UP, KC_PGDN, KC_NO,
         LALT(KC_1), LALT(KC_2), LALT(KC_3), LALT(KC_4), LALT(KC_5),                            KC_NO,  KC_LEFT, KC_DOWN, KC_RGHT,     KC_NO,
         KC_LSFT,      KC_LCTL,    KC_LGUI,    KC_LALT,      KC_ENTER,     _______,   _______, LSFT(KC_Y),  KC_HOME,   KC_NO,  KC_END, LCTL(KC_Z),
         _______,      _______,    _______,    _______,      _______,      _______,   _______,      _______,  _______, _______, _______,      _______
@@ -85,58 +84,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // https://www.reddit.com/r/MechanicalKeyboards/comments/mrnxrj/better_super_alttab/
 
 bool is_alt_tab_active = false;
-bool is_ctl_tab_active = false;
 bool lmod_active = false;
 bool rmod_active = false;
-bool nav_tap = false;
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-    if (is_alt_tab_active) {
-        unregister_code(KC_LALT);
-        is_alt_tab_active = false;
-    }
-    if (is_ctl_tab_active) {
-        unregister_code(KC_LCTL);
-        is_ctl_tab_active = false;
-    }
-    return state;
-}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!record->event.pressed) {
-        clear_oneshot_layer_state(ONESHOT_PRESSED);
-    }
-
-    if (keycode == MO(3)) {
-        if (record->event.pressed) {
-            nav_tap = true;
-            return true;
-        } else if (nav_tap) {
-            set_oneshot_layer(6, ONESHOT_START);
-            nav_tap = false;
-            return true;
-        }
-    }
-
-    nav_tap = false;
-
     switch (keycode){
         case ALT_TAB: // super alt tab macro
             if (record->event.pressed) {
                 if (!is_alt_tab_active) {
                     is_alt_tab_active = true;
                     register_code(KC_LALT);
-                }
-                register_code(KC_TAB);
-            } else {
-                unregister_code(KC_TAB);
-            }
-            return false;
-        case CTL_TAB: // super alt tab macro
-            if (record->event.pressed) {
-                if (!is_ctl_tab_active) {
-                    is_ctl_tab_active = true;
-                    register_code(KC_LCTL);
                 }
                 register_code(KC_TAB);
             } else {
@@ -193,15 +150,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
-    if (is_ctl_tab_active && keycode != KC_LEFT && keycode != KC_RIGHT) {
-        unregister_code(KC_LCTL);
-        is_ctl_tab_active = false;
-        if (keycode == KC_ENTER) {
-            return false;
-        }
-    }
-
-
     if (IS_LAYER_ON(5) && lmod_active) {
         switch (keycode) {
             case LCTL_T(KC_SCLN):
@@ -232,6 +180,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     return true;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    if (is_alt_tab_active) {
+        unregister_code(KC_LALT);
+        is_alt_tab_active = false;
+    }
+    return state;
 }
 
 bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
