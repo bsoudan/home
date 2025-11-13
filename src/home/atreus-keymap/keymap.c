@@ -9,68 +9,90 @@ enum custom_keycodes {
   RMOD
 };
 
-#define LNUM LT(2, KC_TAB)
+enum layers {
+    L_DV = 0,
+    L_SYM,
+    L_NUM,
+    L_NAV,
+    L_CTL,
+    L_LMOD,
+    L_RMOD
+};
+
+#define SYM LT(L_SYM, KC_SPC)
+#define NUM LT(L_NUM, KC_TAB)
+#define NAV MO(L_NAV)
+#define CTL MO(L_CTL)
+
+#define L1(x) LCTL_T(KC_##x)
+#define L2(x) LSFT_T(KC_##x)
+#define L3(x) LGUI_T(KC_##x)
+#define L4(x) LALT_T(KC_##x)
+
+#define R1(x) RCTL_T(KC_##x)
+#define R2(x) RSFT_T(KC_##x)
+#define R3(x) RGUI_T(KC_##x)
+#define R4(x) RALT_T(KC_##x)
 
 #include "g/keymap_combo.h"
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT(
-        KC_QUOT, KC_COMM, KC_DOT, KC_P,  KC_Y,                  KC_F,   KC_G,  KC_C,  KC_R,  KC_L,
-        KC_A,    KC_O,    KC_E,   KC_U,  KC_I,                  KC_D,   KC_H,  KC_T,  KC_N,  KC_S,
-        KC_SCLN, KC_Q,    KC_J,   KC_K,  KC_X,  KC_NO,   KC_NO, KC_B,   KC_M,  KC_W,  KC_V,  KC_Z,
-        MO(4),   KC_NO,   KC_NO,  LMOD,  MO(3),  MO(1),   LNUM,  KC_SPC, RMOD,  KC_NO, KC_NO, MO(4)
+    [L_DV] = LAYOUT(
+        KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                           KC_F,    KC_G,    KC_C,    KC_R,    KC_L,
+        KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                           KC_D,    KC_H,    KC_T,    KC_N,    KC_S,
+        KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    _______,       CTL,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,
+        CTL,     _______, _______, LMOD,    SYM,     NAV,           NUM,  KC_SPC,    RMOD, _______, _______, _______
     ),
-    // sym layer
-    [1] = LAYOUT(
-        KC_GRV,  KC_LT,   KC_GT,   KC_DLR,  KC_PERC,                     KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_SLSH,
-        KC_EXLM, KC_AT,   KC_HASH, KC_DQUO, KC_COLN,                     KC_EQL,  KC_MINS, KC_LCBR, KC_RCBR, KC_QUES,
-        LCTL_T(KC_COLN),  LSFT_T(KC_BSLS),   LGUI_T(KC_BSLS), LALT_T(KC_TILDE), KC_CIRC,  _______,   _______, KC_PLUS, RALT_T(KC_UNDS), RGUI_T(KC_LBRC), RSFT_T(KC_RBRC), RCTL_T(KC_PIPE),
+
+    [L_SYM] = LAYOUT(
+        KC_GRV,   KC_LT,    KC_GT,    KC_DLR,    KC_PERC,                     KC_AMPR,  KC_ASTR,  KC_LPRN,  KC_RPRN,  KC_SLSH,
+        KC_EXLM,  KC_AT,    KC_HASH,  KC_DQUO,   KC_COLN,                      KC_EQL,  KC_MINS,  KC_LCBR,  KC_RCBR,  KC_QUES,
+        L1(COLN), L2(BSLS), L3(BSLS), L4(TILDE), KC_CIRC, _______,   _______, KC_PLUS, R4(UNDS), R3(LBRC), R2(RBRC), R1(PIPE),
+        _______,  _______,  _______,  _______,   _______, _______,   _______, _______,  _______,  _______,  _______,  _______
+    ),
+
+    [L_NUM] = LAYOUT(
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                         KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10,
+        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,
+        KC_LCTL, KC_LSFT, KC_LGUI, KC_LALT, KC_F11,  _______,   _______,  KC_F12, KC_RALT, KC_RGUI, KC_RSFT, KC_RCTL,
+        _______, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
+    ),
+
+#define NAV_UNDO  L1(P1)
+#define NAV_CUT   L2(P2)
+#define NAV_COPY  L3(P3)
+#define NAV_PASTE L4(P4)
+#define NAV_REDO  LCTL(KC_Y)
+
+    [L_NAV] = LAYOUT(
+        LGUI(KC_1), LGUI(KC_2), LGUI(KC_3), LGUI(KC_4), ALT_TAB,                         KC_ESC, KC_PGUP,   KC_UP, KC_PGDN,  KC_PSCR,
+        LALT(KC_1), LALT(KC_2), LALT(KC_3), LALT(KC_4), LALT(KC_5),                       KC_NO, KC_LEFT, KC_DOWN, KC_RGHT,   KC_INS,
+        NAV_UNDO,   NAV_CUT,    NAV_COPY,   NAV_PASTE,  MS_BTN3,    _______,   _______, _______, KC_HOME,   KC_NO,  KC_END, KC_PAUSE,
+        NAV_REDO,   _______,    _______,    _______,    _______,    _______,   _______, _______, _______, _______, _______,  _______
+    ),
+
+    [L_CTL] = LAYOUT(
+        _______, _______, _______, _______, _______,                     KC_MSTP, KC_MPLY, KC_VOLU, _______, KC_BRIU,
+        _______, _______, _______, _______, _______,                     _______, KC_MPRV, KC_VOLD, KC_MNXT, KC_BRID,
+        KC_LCTL, KC_LSFT, KC_LGUI, KC_LALT, _______, KC_SLEP,   _______, _______, _______, KC_MUTE, _______, _______,
+        QK_BOOT, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
+    ),
+
+    [L_LMOD] = LAYOUT(
+        _______,  _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
+        _______,  _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
+        L1(SCLN), L2(Q),   L3(J),   L4(K),   _______, _______,   _______, _______, _______, _______, _______, _______,
         _______,  _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
     ),
-    // num layer
-    [2] = LAYOUT(
-        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                       KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,
-        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,
-        KC_LSFT, KC_LCTL, KC_LGUI, KC_LALT, KC_F11,  _______,   _______, KC_F12,  KC_RALT, KC_RGUI, KC_RCTL, KC_RSFT,
-        _______, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
-    ),
-    // nav layer
-    [3] = LAYOUT(
-        KC_ESC, ALT_TAB,    LCTL(KC_C),    LCTL(KC_V), MS_BTN3,                                KC_ESC,  KC_PGUP,   KC_UP, KC_PGDN, KC_NO,
-        LALT(KC_1), LALT(KC_2), LALT(KC_3), LALT(KC_4), LALT(KC_5),                            KC_NO,  KC_LEFT, KC_DOWN, KC_RGHT,     KC_NO,
-        KC_LSFT,      KC_LCTL,    KC_LGUI,    KC_LALT,      KC_ENTER,     _______,   _______, LSFT(KC_Y),  KC_HOME,   KC_NO,  KC_END, LCTL(KC_Z),
-        _______,      _______,    _______,    _______,      _______,      _______,   _______,      _______,  _______, _______, _______,      _______
-    ),
-    // ctl layer
-    [4] = LAYOUT(
-        KC_SYSTEM_SLEEP, _______, KC_PRINT_SCREEN, KC_SCROLL_LOCK, KC_PAUSE,                     KC_AUDIO_MUTE, _______, KC_AUDIO_VOL_UP, _______, KC_BRIGHTNESS_UP,
-        _______, _______, KC_INSERT, _______, _______,                     _______, KC_MEDIA_PREV_TRACK, KC_AUDIO_VOL_DOWN, KC_MEDIA_NEXT_TRACK, KC_BRIGHTNESS_DOWN,
-        KC_LSFT, KC_LCTL, KC_LGUI, KC_LALT, _______, _______,   _______, _______, KC_RALT, RGUI_T(KC_MEDIA_PLAY_PAUSE), RSFT_T(KC_MEDIA_STOP), KC_RSFT,
-        KC_SYSTEM_SLEEP, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, QK_BOOT
-    ),
-    // lmod layer
-    [5] = LAYOUT(
+
+    [L_RMOD] = LAYOUT(
         _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
-        LCTL_T(KC_SCLN), LSFT_T(KC_Q), LGUI_T(KC_J), LALT_T(KC_K), _______, _______,   _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______,   _______, _______,   R4(M),   R3(W),   R2(V),   R1(Z),
         _______, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
-    ),
-    // go layer
-    [6] = LAYOUT(
-        LALT(KC_1), LALT(KC_2), LALT(KC_3), LALT(KC_4), _______,                     _______, _______, _______, _______, _______,
-        LWIN(KC_1), LWIN(KC_2), LWIN(KC_3), LWIN(KC_4), _______,                     _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
-    ),
-    // rmod layer -- needs to be 7 due to some weird bug with combo definitions
-    [7] = LAYOUT(
-        _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______,   _______, _______, RALT_T(KC_M), RGUI_T(KC_W), RSFT_T(KC_V), RCTL_T(KC_Z),
-        _______, _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______, _______
-    ),
-    /*
-    // empty layer
+    )
+
+    /* empty layer
     [7] = LAYOUT(
         _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______,
@@ -103,43 +125,73 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LMOD: // left mod layer
             if (record->event.pressed) {
                 register_code(KC_LSFT);
-                layer_on(5);
+                layer_on(L_LMOD);
                 lmod_active = true;
             } else {
                 unregister_code(KC_LSFT);
-                layer_off(5);
+                layer_off(L_LMOD);
                 lmod_active = false;
             }
             return false;
         case RMOD: // left mod layer
             if (record->event.pressed) {
                 register_code(KC_RSFT);
-                layer_on(7);
+                layer_on(L_RMOD);
                 rmod_active = true;
             } else {
                 unregister_code(KC_RSFT);
-                layer_off(7);
+                layer_off(L_RMOD);
                 rmod_active = false;
             }
             return false;
-        case RALT_T(KC_UNDS):
+        case L1(COLN):
             if (record->tap.count && record->event.pressed) {
-                register_code16(KC_UNDS);
+                tap_code16(KC_COLN);
                 return false;
             }
             break;
-        case LALT_T(KC_TILDE):
+        case L4(TILDE):
             if (record->tap.count && record->event.pressed) {
-                register_code16(KC_TILDE);
+                tap_code16(KC_TILDE);
                 return false;
             }
             break;
-        case RCTL_T(KC_PIPE):
+        case R4(UNDS):
             if (record->tap.count && record->event.pressed) {
-                register_code16(KC_PIPE);
+                tap_code16(KC_UNDS);
                 return false;
             }
             break;
+        case R1(PIPE):
+            if (record->tap.count && record->event.pressed) {
+                tap_code16(KC_PIPE);
+                return false;
+            }
+            break;
+        case NAV_UNDO:
+           if (record->event.pressed && record->tap.count) {
+               tap_code16(LCTL(KC_Z));
+               return false;
+           }
+           break;
+        case NAV_CUT:
+           if (record->event.pressed && record->tap.count) {
+               tap_code16(LSFT(KC_DEL));
+               return false;
+           }
+           break;
+        case NAV_COPY:
+           if (record->event.pressed && record->tap.count) {
+               tap_code16(LCTL(KC_INS));
+               return false;
+           }
+           break;
+        case NAV_PASTE:
+           if (record->event.pressed && record->tap.count) {
+               tap_code16(LSFT(KC_INS));
+               return false;
+           }
+           break;
     }
 
     if (is_alt_tab_active && keycode != KC_LEFT && keycode != KC_RIGHT) {
@@ -150,7 +202,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
-    if (IS_LAYER_ON(5) && lmod_active) {
+    if (IS_LAYER_ON(L_LMOD) && lmod_active) {
         switch (keycode) {
             case LCTL_T(KC_SCLN):
             case LSFT_T(KC_Q):
@@ -165,7 +217,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
-    if (IS_LAYER_ON(7) && rmod_active) {
+    if (IS_LAYER_ON(L_RMOD) && rmod_active) {
         switch (keycode) {
             case RALT_T(KC_M):
             case RGUI_T(KC_W):
@@ -192,7 +244,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case LNUM:
+        case NUM:
             return true;
         default:
             return false;

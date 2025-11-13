@@ -2,3 +2,4 @@
 
 #define RETRO_TAPPING_PER_KEY
 
+#define HOLD_ON_OTHER_KEY_PRESS
