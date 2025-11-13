@@ -12,5 +12,6 @@
     magika # ai filetype detection
     yad # simple command line guy tool
     xsel # x clipboard integration
+    qmk # keyboard
   ];
 }
