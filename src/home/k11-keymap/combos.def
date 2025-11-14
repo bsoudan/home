@@ -1,0 +1,56 @@
+
+//   name     result    chord keys
+COMB(LENTER,     KC_ENTER,     KC_U, KC_I)
+COMB(LBACKSPACE, KC_BACKSPACE, KC_P, KC_Y)
+COMB(LDELETE,    KC_DEL,       KC_K, KC_X)
+COMB(LESCAPE,    KC_ESC,       KC_COMM, KC_DOT, KC_P)
+
+COMB(RENTER,     KC_ENTER,     KC_D, KC_H)
+COMB(RBACKSPACE, KC_BACKSPACE, KC_F, KC_G)
+COMB(RDELETE,    KC_DEL,       KC_B, KC_M)
+COMB(RESCAPE,    KC_ESC,       KC_G, KC_C, KC_R)
+
+#define MOD_L1 MOD_LCTL
+#define MOD_L2 MOD_LSFT
+#define MOD_L3 MOD_LGUI
+#define MOD_L4 MOD_LALT
+
+#define MOD_R1 MOD_RCTL
+#define MOD_R2 MOD_RSFT
+#define MOD_R3 MOD_RGUI
+#define MOD_R4 MOD_RALT
+
+#define KC_L1 KC_SCLN
+#define KC_L2 KC_Q
+#define KC_L3 KC_J
+#define KC_L4 KC_K
+
+#define KC_R1 KC_Z
+#define KC_R2 KC_V
+#define KC_R3 KC_W
+#define KC_R4 KC_M
+
+#define COMBOS(x,y) \
+   COMB(x##y##1, LM(L_##x, MOD_##y##1), x, KC_##y##1) \
+   COMB(x##y##12, LM(L_##x, MOD_##y##1 | MOD_##y##2), x, KC_##y##1, KC_##y##2) \
+   COMB(x##y##123, LM(L_##x, MOD_##y##1 | MOD_##y##2 | MOD_##y##3), x, KC_##y##1, KC_##y##2, KC_##y##3) \
+   COMB(x##y##1234, LM(L_##x, MOD_##y##1 | MOD_##y##2 | MOD_##y##3 | MOD_##y##4), x, KC_##y##1, KC_##y##2, KC_##y##3, KC_##y##4) \
+   COMB(x##y##124, LM(L_##x, MOD_##y##1 | MOD_##y##2 | MOD_##y##4), x, KC_##y##1, KC_##y##2, KC_##y##4) \
+   COMB(x##y##13, LM(L_##x, MOD_##y##1 | MOD_##y##3), x, KC_##y##1, KC_##y##3) \
+   COMB(x##y##134, LM(L_##x, MOD_##y##1 | MOD_##y##3 | MOD_##y##4), x, KC_##y##1, KC_##y##3, KC_##y##4) \
+   COMB(x##y##14, LM(L_##x, MOD_##y##1 | MOD_##y##4), x, KC_##y##1, KC_##y##4) \
+   COMB(x##y##2, LM(L_##x, MOD_##y##2), x, KC_##y##2) \
+   COMB(x##y##23, LM(L_##x, MOD_##y##2 | MOD_##y##3), x, KC_##y##2, KC_##y##3) \
+   COMB(x##y##24, LM(L_##x, MOD_##y##2 | MOD_##y##4), x, KC_##y##2, KC_##y##4) \
+   COMB(x##y##234, LM(L_##x, MOD_##y##2 | MOD_##y##3 | MOD_##y##4), x, KC_##y##2, KC_##y##3, KC_##y##4) \
+   COMB(x##y##3, LM(L_##x, MOD_##y##3), x, KC_##y##3) \
+   COMB(x##y##34, LM(L_##x, MOD_##y##3 | MOD_##y##4), x, KC_##y##3, KC_##y##4) \
+   COMB(x##y##4, LM(L_##x, MOD_##y##4), x, KC_##y##4)
+
+COMBOS(SYM,L)
+COMBOS(NUM,R)
+COMBOS(NAV,L)
+COMBOS(LMOD,L)
+COMBOS(RMOD,R)
+
+
