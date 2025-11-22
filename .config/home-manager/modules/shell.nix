@@ -24,7 +24,6 @@
 
   home.shellAliases = {
     e = "$EDITOR";
-    home = "git --work-tree=$HOME --git-dir=$HOME/.local/var/lib/git-home";
   };
 
   home.packages = with pkgs; [
@@ -106,7 +105,7 @@
       ruler = false;
       savecursor = true;
       saveundo = true;
-  	};
+    };
   };
 
   home.file.".config/micro/bindings.json".text = ''

@@ -55,7 +55,6 @@ cmd_init() {
       cd ~
       mkdir -p $(dirname $HOME_LOCALREPO)
       git_home init -b main
-      git_home config core.excludesfile $HOME/.config/home/gitignore
 
       [ ! -z "$HOME_ORIGIN" ] && {
          info pulling from origin $HOME_ORIGIN...

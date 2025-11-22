@@ -24,39 +24,18 @@
 
 # Initial setup
 
-    # https://github.com/emilyst/home#setup
+    # adapted from https://github.com/emilyst/home#setup
 
-    alias home='git --work-tree=$HOME --git-dir=$HOME/.local/var/git-home'
-    mkdir ~/.local/var
+    ssh-keygen
+    # upload public key in .ssh/ to github
+
+    mkdir -p .local/var
+    git clone --bare ssh://git@github.com/bsoudan/home ~/.local/var/home.git
+    git --work-tree=$HOME --git-dir=$HOME/.local/var/home.git checkout
+    source .bashrc.home
     home init
-    home config set --local status.showUntrackedFiles no
-    home remote add origin ssh://git@github.com/bsoudan/home
-    home fetch --all
-    home reset --hard origin/main
-    home checkout -b main
-    home branch -d master
 
     # create new configuration in .config/home-manager/bsoudan-$HOSTNAME.nix
     ln -s .config/home-manager/bsoudan-$HOSTNAME.nix .config/home-manager/bsoudan.nix
 
     nix run home-manager/release-25.05 -- switch
-=======
-# ♾️  home
-
-## Initial setup
-
-- adapted from https://github.com/emilyst/home#setup
-
-```
-cd ~
-alias home='git --work-tree=$HOME --git-dir=$HOME/.local/var/home.git'
-home init
-home branch -m main
-home config core.excludesfile /home/bsoudan/.gitignore.home
-home remote add origin ssh://bsoudan.sb/home/bsoudan/.local/var/home.git
-home branch --set-upstream-to=origin/main main
-home pull
-source .bashrc.home
-home-install
-```
->>>>>>> 56848b0 (add basics)

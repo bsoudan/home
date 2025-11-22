@@ -1,2 +1,2 @@
 
-source .bashrc.home
+source $HOME/.bashrc.home

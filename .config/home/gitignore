@@ -15,3 +15,5 @@
 !.config/
 .config/*
 !.config/home/
+!.config/home-manager/
+!.config/nixos/
