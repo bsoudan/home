@@ -1,3 +1,4 @@
+
 { inputs, lib, config, pkgs, ... }: {
 
   imports = [
@@ -7,6 +8,12 @@
     ./modules/gui.nix
   ];
 
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.05";
+
+  # extraSpecialArgs = {
+  #   Optionally use extraSpecialArgs
+  #   to pass through arguments to home.nix
+  # }
 
 }
+

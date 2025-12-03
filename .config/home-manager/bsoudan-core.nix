@@ -1,18 +1,12 @@
-{ home-manager, pkgs }:
-home-manager.lib.homeManagerConfiguration {
-  inherit pkgs;
+{ inputs, lib, config, pkgs, ... }: {
 
-  modules = [
+  imports = [
     ./modules/common.nix
     ./modules/shell.nix
     ./modules/sysadmin.nix
-
-    ./core
   ];
 
-  # extraSpecialArgs = {
-  #   Optionally use extraSpecialArgs
-  #   to pass through arguments to home.nix
-  # }
+  home.stateVersion = "24.11";
+
 }
 

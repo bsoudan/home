@@ -15,9 +15,15 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      util = import ./util.nix home-manager pkgs;
     in
     {
-      homeConfigurations.bsoudan = import ./bsoudan.nix { inherit home-manager pkgs; };
+      homeConfigurations = {
+        "bsoudan@bsoudan-carbon" = util.homeDefinition ./meta-carbon.nix;
+        "bsoudan@carbon" = util.homeDefinition ./carbon.nix;
+        "bsoudan@core" = util.homeDefinition ./core.nix;
+        "bsoudan@extreme" = util.homeDefinition ./extreme.nix;
+      };
     };
 }
 
