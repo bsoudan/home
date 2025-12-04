@@ -17,3 +17,7 @@
 !.config/home/
 !.config/home-manager/
 !.config/nixos/
+
+!src/
+src/*
+!src/home
