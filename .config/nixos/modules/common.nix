@@ -104,6 +104,8 @@
       e = "$EDITOR";
   };
 
+  services.avahi.enable = true;
+
   services.netdata.enable = true;
   services.netdata.package = pkgs.netdata.override {
     withCloudUi = true;

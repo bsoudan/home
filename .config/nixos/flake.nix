@@ -2,14 +2,14 @@
   description = "System Configuration flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # nixos-hardware has no inputs
 
     nixos-grub-themes.url = "github:jeslie0/nixos-grub-themes";
     nixos-grub-themes.inputs.nixpkgs.follows = "nixpkgs";
 
-    sops-nix.url = "github:Mic92/sops-nix/3633fc4acf03f43b260244d94c71e9e14a2f6e0d";
+    sops-nix.url = "github:Mic92/sops-nix/";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -24,9 +24,9 @@
         ./modules/common.nix
         ./modules/gui.nix
         ./modules/gaming.nix
+        ./modules/systemd-boot.nix
 
         ./carbon
-        ./modules/systemd-boot.nix
       ];
     };
 
@@ -36,9 +36,9 @@
         inputs.sops-nix.nixosModules.sops
 
         ./modules/common.nix
+        ./modules/systemd-boot.nix
 
         ./core
-        ./modules/systemd-boot.nix
       ];
     };
 

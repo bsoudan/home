@@ -15,19 +15,14 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
+  services.zfs.autoScrub.enable = true;
+  services.zfs.autoSnapshot.enable = true;
+
   networking = {
     hostName = "core";
     domain = "soudan.net";
     hostId = "c0dec08e";
   };
-
-  # Pick only one of the below networking options.
-  #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  #networking.wireless.networks.Soudan.psk = "bleepbloopblop";
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   environment.systemPackages = with pkgs; [
     smartmontools
@@ -49,8 +44,6 @@
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:
-
   powerManagement.powertop.enable = true;
 
   # Enable the OpenSSH daemon.
@@ -63,21 +56,15 @@
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
 
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
-
   # https://www.smtp2go.com/setupguide/postfix/
   #
   # can run postconf afterwards to check configuration
   services.postfix = {
     enable = true;
-    relayHost = "mail.smtp2go.com";
-    relayPort = 2525;
-    domain = "soudan.net";
-    origin = "soudan.net";
-    config = {
+    settings.main = {
+      mydomain = "soudan.net";
+      myorigin = "soudan.net";
+      relayhost = [ "mail.smtp2go.com:2525" ];
       smtp_use_tls = "yes";
       smtp_sasl_auth_enable = "yes";
       smtp_sasl_security_options = "noanonymous";
@@ -86,6 +73,18 @@
     };
   };
   sops.secrets."postfix/sasl_passwd" = {};
+
+  services.smartd = {
+    notifications.mail = {
+      enable = true;
+      sender = "core@soudan.net";
+      recipient = "bill@soudan.net";
+    };
+    notifications.test = true;
+
+    # turns on SMART Automatic Offline Testing on startup, and schedules short self-tests daily, and long self-tests weekly.
+    defaults.monitored = "-a -o on -s (S/../.././02|L/../../7/04)";
+  };
 
   services.unifi = {
     enable = true;
@@ -134,13 +133,6 @@
     };
   };
 
-  #services.cockpit = {
-  #  enable = true;
-  #  allowed-origins = [
-  #    "https://*"
-  #  ];
-  #};
-
   services.scrutiny = {
     enable = true;
     settings.web.listen.port = 8090;
@@ -154,8 +146,8 @@
 
     # https://github.com/NixOS/nixpkgs/blob/5dbc8a39b5e8ef70341156f3898616d1280b73b3/nixos/modules/services/misc/homepage-dashboard.nix#L78
     # https://dashboardicons.com/
-    bookmarks = {
-    };
+    #bookmarks = {
+    #};
 
     services = [
       {
@@ -164,7 +156,6 @@
             transmission = {
               icon = "transmission";
               href = "http://core.home:9091";
-              description = "Transmission Web Bittorrent Client";
               widget = {
                 type = "transmission";
                 url = "http://core.home:9091";
@@ -173,9 +164,8 @@
           }
           {
             plex = {
-              icon = "Plex";
+              icon = "plex";
               href = "http://core.home:32400";
-              description = "Plex Media Portal";
               widget = {
                 type = "plex";
                 url = "http://core.home:32400";
@@ -188,17 +178,21 @@
       {
         "Home" = [
           {
-            "brother laser printer" = {
-              icon = "printer";
-              href = "http://core.home:631";
-              description = "CUPS Web Portal";
+            "home assistant" = {
+              icon = "home-assistant";
+              href = "http://core.home:8123";
             };
           }
           {
             zwave-js = {
-              icon = "zwave";
+              icon = "zwavejs2mqtt";
               href = "http://core.home:8091";
-              description = "ZWave Web Portal";
+            };
+          }
+          {
+            "brother laser printer" = {
+              icon = "printer";
+              href = "http://core.home:631";
             };
           }
         ];
@@ -206,10 +200,23 @@
       {
         "Admin" = [
           {
+            unifi = {
+              icon = "unifi-controller";
+              href = "https://core.home:8443";
+              # https://core.home:8443/api/stat/sites seems to give data, but the portal is adding /proxy/network
+              #widget = {
+              #  type = "unifi";
+              #  url = "https://core.home:8443";
+              #  #key = "uB7u4Z1Fqm5WRDyI7D2B_k1h6tn9CznU";
+              #  username = "bsoudan";
+              #  password = "";
+              #};
+            };
+          }
+          {
             netdata = {
               icon = "netdata";
               href = "http://core.home:19999";
-              description = "NetData Web UI";
               widget = {
                 type = "netdata";
                 url = "http://core.home:19999";
@@ -217,27 +224,19 @@
             };
           }
           {
-            unifi = {
-              icon = "unifi-controller";
-              href = "https://core.home:8443";
-              description = "UniFi Controller";
-              # https://core.home:8443/api/stat/sites seems to give data, but the portal is adding /proxy/network
-              # widget = {
-              #   type = "unifi";
-              #   url = "https://core.home:8443";
-              #   key = "uB7u4Z1Fqm5WRDyI7D2B_k1h6tn9CznU";
-              # };
-            };
-          }
-          {
             scrutiny = {
               icon = "scrutiny";
               href = "http://core.home:8090";
-              description = "Hard Drive monitor";
               widget = {
                 type = "scrutiny";
                 url = "http://core.home:8090";
               };
+            };
+          }
+          {
+            idrac = {
+              icon = "idrac";
+              href = "http://172.27.1.9";
             };
           }
           #{
@@ -407,6 +406,7 @@
     # https://github.com/transmission/transmission/blob/main/docs/Editing-Configuration-Files.md
     # /var/lib/transmission/.config/transmission-daemon/settings.json
     # https://github.com/eternnoir/transmission/blob/master/settings.json
+    package = pkgs.transmission_4;
 
     settings = {
       rpc-bind-address = "0.0.0.0";
@@ -424,6 +424,8 @@
       speed-limit-down-enabled = true;
       speed-limit-up = 50000;
       speed-limit-up-enabled = true;
+
+      umask = 002;
     };
     webHome = pkgs.flood-for-transmission;
   };
@@ -452,6 +454,56 @@
     hashedPassword = "$y$j9T$P.afKWIQkjI7LszgF4JO7/$9ajt0SbkggUCBWwi3Q2YbpfgQHfA/Os5LzvJtdEIVRC";
   };
 
+ services.home-assistant = {
+    enable = true;
+
+    # opt-out from declarative configuration management
+    config = null;
+    lovelaceConfig = null;
+    # configure the path to your config directory
+    #configDir = "/srv/hass";
+    # specify list of components required by your configuration
+    # https://github.com/NixOS/nixpkgs/blob/master/pkgs/servers/home-assistant/component-packages.nix
+
+    extraComponents = [
+      "default_config"
+      "esphome"
+      # Components required to complete the onboarding
+      "analytics"
+      "google_translate"
+      "met"
+      "radio_browser"
+      "shopping_list"
+      # Recommended for fast zlib compression
+      # https://www.home-assistant.io/integrations/isal
+      "isal"
+      "zwave_js"
+      "cast"
+      "ipp"
+      "yamaha"
+      "yamaha_musiccast"
+      "august"
+      "backup"
+      "homekit_controller"
+      "spotify"
+      "synology_dsm"
+      "bond"
+      "denonavr"
+      "nexia"
+      "github"
+      "upnp"
+      "hue"
+      "webostv"
+      "tesla_fleet"
+      "hassio"
+    ];
+  };
+
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="1a86", ATTR{idProduct}=="55d4", \
+      TEST=="power/control", ATTR{power/control}="on"
+  '';
+
   # fileSystems."/mnt/storage" = {
   #     device = "//nas/storage";
   #     fsType = "cifs";
@@ -461,25 +513,7 @@
   #     in ["${automount_opts},credentials=/etc/nixos/smb-secrets"];
   # };
 
-  # This option defines the first version of NixOS you have installed on this particular machine,
-  # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
-  #
-  # Most users should NEVER change this value after the initial install, for any reason,
-  # even if you've upgraded your system to a new NixOS release.
-  #
-  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
-  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
-  # to actually do that.
-  #
-  # This value being lower than the current NixOS release does NOT mean your system is
-  # out of date, out of support, or vulnerable.
-  #
-  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
-  # and migrated your data accordingly.
-  #
-  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "25.05"; # Did you read the comment?
-
+  system.stateVersion = "25.05";
 }
 
 # {
@@ -558,44 +592,8 @@
 #     };
 #   };
 
-#   environment.shellAliases = {
-#     "sys" = "systemctl";
-#     "j" = "journalctl";
-#     "xyz" = builtins.getEnv "XYZ";
-#   };
-
-#  services.unifi = {
-#    enable = true;
-#    unifiPackage = pkgs.unifi8;
-#  };
-
-
   # virtualisation.docker.enable = true;
   # users.extraGroups.docker.members = [ "bsoudan" ];
-
-#  services.home-assistant = {
-#    enable = true;
-#
-#    package = (pkgs.home-assistant.override {
-#      extraPackages = ps: [
-#        ps.python_openzwave
-#      ];
-#    });
-#
-#    config.homeassistant = {
-#      name = "127 Stoneledge Way";
-#      latitude = "45.154425";
-#      longitude = "-77.471735";
-#      elevation = "152";
-#      unit_system = "imperial";
-#      time_zone = "America/New_York";
-#    };
-#
-#    config.zwave = {
-#      usb_path = "/dev/ttyUSB0";
-#      network_key = "0x97, 0x07, 0xAB, 0x9E, 0x53, 0x3C, 0x66, 0x92, 0x21, 0xF8, 0xEE, 0xF3, 0x4E, 0xC8, 0x52, 0x9B";
-#    };
-#  };
 
 #  services.terraria = {
 #    enable = true;
