@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # nixos-hardware has no inputs
 
@@ -32,6 +34,7 @@
 
     nixosConfigurations.core = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+      specialArgs = { pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.x86_64-linux; };
       modules = [
         inputs.sops-nix.nixosModules.sops
 

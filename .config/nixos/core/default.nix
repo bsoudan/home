@@ -2,7 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
   imports =
@@ -11,9 +11,8 @@
       ./openvpn-server.nix
     ];
 
-  # Enable the Flakes feature and the accompanying new nix command-line tool
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nixpkgs.config.allowUnfree = true;
+  # ran out of space using default settings?
+  nix.settings.build-dir = "/var/lib/nix-build";
 
   services.zfs.autoScrub.enable = true;
   services.zfs.autoSnapshot.enable = true;
@@ -456,6 +455,7 @@
 
  services.home-assistant = {
     enable = true;
+    package = pkgs-unstable.home-assistant;
 
     # opt-out from declarative configuration management
     config = null;
