@@ -6,12 +6,10 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
+    gamescopeSession.enable = true;
   };
 
-  # 2023/12/14 -- can't build
-  #boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  #boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
+  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
   boot.kernel.sysctl = {
       # 20-shed.conf
       "kernel.sched_cfs_bandwidth_slice_us" = 3000;
@@ -25,5 +23,4 @@
       "vm.max_map_count" = 2147483642;
     };
   programs.gamemode.enable = true;
-
 }

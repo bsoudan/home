@@ -6,6 +6,11 @@
 {
   hardware.nvidia = {
     prime = {
+      offload = {
+        enable = true;
+        enableOffloadCmd = true;
+      };
+
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:1:0:0";
     };
@@ -30,9 +35,13 @@
     open = true;
 
     # Enable the Nvidia settings menu, accessible via `nvidia-settings`.
-    nvidiaSettings = true;
+    # 2026/03/04 -- supposedly conflicts with prime? haven't used it anyway.
+    #nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
     package = config.boot.kernelPackages.nvidiaPackages.stable;
+
   };
+
+  services.xserver.videoDrivers = [ "nvidia" ];
 }
