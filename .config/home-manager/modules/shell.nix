@@ -63,7 +63,7 @@
     enable = true;
     settings = {
       user.name = "Bill Soudan";
-      user.mail = "bill@soudan.net";
+      user.email = "bill@soudan.net";
       init.defaultBranch = "main";
     };
   };
