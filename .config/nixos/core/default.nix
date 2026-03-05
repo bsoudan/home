@@ -504,6 +504,11 @@
       TEST=="power/control", ATTR{power/control}="on"
   '';
 
+  services.netdata.enable = true;
+  services.netdata.package = pkgs.netdata.override {
+    withCloudUi = true;
+  };
+
   # fileSystems."/mnt/storage" = {
   #     device = "//nas/storage";
   #     fsType = "cifs";

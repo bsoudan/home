@@ -61,9 +61,9 @@
 
   programs.git = {
     enable = true;
-    userName = "Bill Soudan";
-    userEmail = "bill@soudan.net";
-    extraConfig = {
+    settings = {
+      user.name = "Bill Soudan";
+      user.mail = "bill@soudan.net";
       init.defaultBranch = "main";
     };
   };

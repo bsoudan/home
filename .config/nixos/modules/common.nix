@@ -106,11 +106,6 @@
 
   services.avahi.enable = true;
 
-  services.netdata.enable = true;
-  services.netdata.package = pkgs.netdata.override {
-    withCloudUi = true;
-  };
-
   services.sshd.enable = true;
 
   # for keychron k11

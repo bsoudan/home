@@ -45,7 +45,7 @@
       ];
     };
 
-    nixosConfigurations.x1-extreme = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.extreme = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; }; # pass the inputs into the configuration modules
       modules = [

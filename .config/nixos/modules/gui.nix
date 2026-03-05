@@ -20,18 +20,12 @@
     loader.timeout = 0;
   };
 
-  services.xserver = {
-    enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
-    #videoDrivers = [ "intel" ];
-  };
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
+
+  #services.xserver.enable = true;
 
  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "dvorak";
-  };
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -92,8 +86,8 @@
   fonts.packages = with pkgs; [
         noto-fonts
         noto-fonts-cjk-sans
-        noto-fonts-emoji
-        ubuntu_font_family
+        noto-fonts-color-emoji
+        ubuntu-classic
         corefonts
   ];
 
